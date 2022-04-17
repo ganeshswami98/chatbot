@@ -1,10 +1,3 @@
-/**
- * @Author: Ganesh Kumar
- * @Date:   2022-04-16 23:38:18
- * @Last Modified by:   Ganesh Kumar
- * @Last Modified time: 2022-04-17 07:38:08
- */
-
 import 'package:avatar_glow/avatar_glow.dart';
 import 'package:chatbot/start_new_chat.dart';
 import 'package:flutter/material.dart';
@@ -29,20 +22,12 @@ saveChat(List<String> list, BuildContext context) async {
   String? chats = await prefs.getString('past_chats');
   // chats = chats! + abc;
   print(chats);
-  bool status = await prefs.setString('past_chats', chats! + abc);
+  bool status = chats != null
+      ? await prefs.setString('past_chats', chats + abc)
+      : await prefs.setString('past_chats', abc);
   print(status);
   Navigator.pop(context);
-  // resList = Restaurant.decode(chats!);
-  // resList.add(convertListintoRestaurentList(list));
 }
-
-// convertListintoRestaurentList(List<String> list) {
-//   List<Restaurant> res = [];
-//   for (int i = 0; i < list.length; i += 2) {
-//     res.add(Restaurant(bot: list[i], human: list[i + 1]));
-//   }
-//   return res;
-// }
 
 class RestaurentChat extends StatefulWidget {
   List<Restaurant> res;
@@ -64,21 +49,12 @@ class _RestaurentChatState extends State<RestaurentChat> {
   void initState() {
     super.initState();
     _speech = stt.SpeechToText();
-    // startDataFetch();
-    // while (!isChatDataFetched) {
-    //   if (isChatDataFetched) {
-    //     _list.add(chatData.restaurant[0].bot);
-    //   }
-    // }
   }
 
   @override
   Widget build(BuildContext context) {
     if (_isListening == 2) _list.add(res[ind].bot);
 
-    print(res);
-    // ChatData chatData;
-    // print(chatData.restaurant[0].bot);
     return Scaffold(
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: FloatingActionButton(
@@ -95,7 +71,7 @@ class _RestaurentChatState extends State<RestaurentChat> {
               onTap: () {
                 saveChat(_list, context);
               },
-              child: Text(
+              child: const Text(
                 "End Chat",
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
@@ -118,18 +94,12 @@ class _RestaurentChatState extends State<RestaurentChat> {
     if (_isListening != 1) {
       // await _speech.initialize();
       bool available = await _speech.initialize(
-        onStatus: (val) {
-          if (val == "done") {
-            setState(() {
-              _isListening = 0;
-            });
-          }
-        },
+        onStatus: (val) => print('onStatus $val'),
         onError: (val) => print('onError: $val'),
       );
       if (available) {
-        setState(() => _isListening = 1);
-        // _isListening = 1;
+        // setState(() => _isListening = 1);
+        _isListening = 1;
         _speech.listen(
           onResult: (val) => {_text = val.recognizedWords},
         );
