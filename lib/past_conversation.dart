@@ -64,6 +64,15 @@ class _PastConversationsState extends State<PastConversations> {
     //   });
     // }
     return Scaffold(
+        bottomNavigationBar: Container(
+          color: Colors.grey,
+          child: TextButton(
+              onPressed: () {
+                getPastChats();
+                setState(() {});
+              },
+              child: Text("Load Chats")),
+        ),
         appBar: AppBar(title: Text("Recent Chats")),
         floatingActionButton: const StartNewConversation(),
         body: ListView.builder(
